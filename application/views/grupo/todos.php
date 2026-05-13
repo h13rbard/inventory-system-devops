@@ -1,0 +1,49 @@
+<section class="no-padding-bottom">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12 col-lg-12 col-sm-12">
+
+				<!-- table de categorias -->
+				<div class="block table-responsive">
+					<div class="title">
+						Productos / Grupo
+					</div>
+					
+						<div class="">
+						<table id="dtRegistros" class="table table-sm datatable">
+							<thead>
+								<tr class="bg-dark">
+									<th>Id</th>
+									<th>Clave Art.</th>
+									<th>Codigo Prov.</th>
+									<th>Clas.</th>
+									<th>Descripción</th>
+									<th>Precio</th>
+									<th>Localizacion</th>
+									<th>Grupo</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+							<tfoot>
+								<tr class="bg-dark">
+									<th>Id</th>
+									<th>Clave Art.</th>
+									<th>Codigo Prov.</th>
+									<th>Clas.</th>
+									<th>Descripción</th>
+									<th>Precio</th>
+									<th>Localizacion</th>
+									<th>Grupo</th>
+								</tr>
+							</tfoot>
+							<tbody></tbody>
+						</table>
+						</div>
+					
+				</div>
+				<!-- table de categorias -->
+
+			</div>
+		</div>
+	</div>
+</section>
