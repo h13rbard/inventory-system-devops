@@ -1,7 +1,8 @@
 FROM php:7.4-fpm
 
-# Instalar dependencias del sistema
+# Instalar nginx y dependencias
 RUN apt-get update && apt-get install -y \
+    nginx \
     git \
     unzip \
     zip \
@@ -11,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     libonig-dev \
     curl \
+    supervisor \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install \
         pdo \
@@ -22,37 +24,35 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Instalar Composer
+# Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Directorio de trabajo
 WORKDIR /var/www
 
-# Copiar composer primero (cache Docker)
+# Composer cache layer
 COPY composer.json composer.lock* ./
 
-# Instalar dependencias
 RUN composer install --no-dev --optimize-autoloader
 
 # Copiar proyecto
 COPY . .
 
-# Crear directorios necesarios
+# Config nginx
+COPY docker/production/default.conf /etc/nginx/sites-available/default
+
+# Supervisor
+COPY docker/production/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Permisos
 RUN mkdir -p \
     application/cache \
     application/logs \
-    public/images
-
-# Permisos
-RUN chown -R www-data:www-data /var/www \
+    public/images \
+    && chown -R www-data:www-data /var/www \
     && chmod -R 775 application/cache \
     && chmod -R 775 application/logs \
     && chmod -R 775 public/images
 
-# Usuario no-root
-USER www-data
+EXPOSE 80
 
-EXPOSE 9000
-
-HEALTHCHECK --interval=30s --timeout=5s CMD php-fpm -t || exit 1
-CMD ["php-fpm"]
+CMD ["/usr/bin/supervisord"]
