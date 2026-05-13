@@ -1,8 +1,12 @@
+version: '3.8'
+
 services:
   app:
     build:
       context: .
       dockerfile: docker/php/Dockerfile
+    env_file:
+      - .env
 
     container_name: inventory_app
 
@@ -35,6 +39,11 @@ services:
 
   mysql:
     image: mysql:8.0
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
     container_name: inventory_mysql
 
@@ -79,11 +88,4 @@ volumes:
 networks:
   inventory_network:
 
-env_file:
-  - .env
 
-healthcheck:
-  test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-  interval: 10s
-  timeout: 5s
-  retries: 5
