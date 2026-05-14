@@ -12,7 +12,6 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     libonig-dev \
     curl \
-    supervisor \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install \
         pdo \
@@ -23,6 +22,9 @@ RUN apt-get update && apt-get install -y \
         mbstring \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /var/lib/php/sessions && \
+    chown -R www-data:www-data /var/lib/php/sessions
 
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -40,9 +42,6 @@ COPY . .
 # Config nginx
 COPY docker/production/default.conf /etc/nginx/sites-available/default
 
-# Supervisor
-COPY docker/production/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
 # Permisos
 RUN mkdir -p \
     application/cache \
@@ -55,4 +54,5 @@ RUN mkdir -p \
 
 EXPOSE 80
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["sh", "-c", "nginx && php-fpm -F"]
+
