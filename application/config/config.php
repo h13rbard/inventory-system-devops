@@ -1,4 +1,4 @@
-<?php
+php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /*
@@ -25,10 +25,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 /*$config['base_url'] = '';
 */
-$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
-    || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+$proto = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'http';
 
-$config['base_url'] = $protocol . $_SERVER['HTTP_HOST'] . '/';
+$config['base_url'] = $proto . '://' . $_SERVER['HTTP_HOST'] . '/';
 /*
 |--------------------------------------------------------------------------
 | Index File

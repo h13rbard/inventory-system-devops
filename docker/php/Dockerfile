@@ -1,6 +1,5 @@
 FROM php:7.4-fpm
 
-# Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -12,47 +11,16 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install \
-        pdo \
-        pdo_mysql \
-        mysqli \
-        gd \
-        zip \
-        mbstring \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && docker-php-ext-install pdo pdo_mysql mysqli gd zip mbstring
 
-# Instalar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Directorio de trabajo
 WORKDIR /var/www
 
-# Copiar composer primero (cache Docker)
-COPY composer.json composer.lock* ./
-
-# Instalar dependencias
-RUN composer install --no-dev --optimize-autoloader
-
-# Copiar proyecto
 COPY . .
 
-# Crear directorios necesarios
-RUN mkdir -p \
-    application/cache \
-    application/logs \
-    public/images
-
-# Permisos
-RUN chown -R www-data:www-data /var/www \
-    && chmod -R 775 application/cache \
-    && chmod -R 775 application/logs \
-    && chmod -R 775 public/images
-
-# Usuario no-root
-USER www-data
+RUN chown -R www-data:www-data /var/www
 
 EXPOSE 9000
 
-HEALTHCHECK --interval=30s --timeout=5s CMD php-fpm -t || exit 1
 CMD ["php-fpm"]

@@ -75,10 +75,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'mysql',
-	'username' => 'inventory_user',
-	'password' => 'root',
-	'database' => 'inventario',
+	'hostname' => getenv('DB_HOST') ?: 'localhost',
+	'username' => getenv('DB_USERNAME') ?: 'root',
+	'password' => getenv('DB_PASSWORD') ?: '',
+	'database' => getenv('DB_DATABASE') ?: '',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
@@ -94,3 +94,8 @@ $db['default'] = array(
 	'failover' => array(),
 	'save_queries' => TRUE
 );
+
+
+
+
+
