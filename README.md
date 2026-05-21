@@ -1,6 +1,4 @@
-# inventory-system-devops
-Migración y Modernización de Sistema Legacy PHP/CodeIgniter a AWS ECS Fargate con Arquitectura Dockerizada y DevOps Cloud-Native
-Descripción del proyecto
+# Migración y Modernización de Sistema Legacy PHP/CodeIgniter a AWS ECS Fargate con Arquitectura Dockerizada y DevOps Cloud-Native
 
 Durante este proyecto realicé la migración, modernización y contenerización de un sistema legacy desarrollado en PHP/CodeIgniter hacia una arquitectura cloud-native sobre Amazon Web Services AWS, utilizando servicios administrados y prácticas modernas de DevOps.
 
