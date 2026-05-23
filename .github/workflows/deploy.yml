@@ -1,59 +1,52 @@
+---
 name: Deploy to ECS
-
-on:
-push:
+on: null
+push: null
 branches:
-- develop
-
-jobs:
-deploy:
+  - develop
+jobs: null
+deploy: null
 runs-on: ubuntu-latest
-
-
 steps:
   - name: Checkout repository
     uses: actions/checkout@v4
-
   - name: Configure AWS credentials=
     uses: aws-actions/configure-aws-credentials@v4
     with:
       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       aws-region: us-east-2
-
   - name: Verify AWS Identity
     run: |
       aws sts get-caller-identity
-
   - name: Login to Amazon ECR
-    run: |
-      aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 159858924500.dkr.ecr.us-east-2.amazonaws.com
-
+    run: >
+      aws ecr get-login-password --region us-east-2 | docker login --username AWS
+      --password-stdin 159858924500.dkr.ecr.us-east-2.amazonaws.com
   - name: Debug ECR
     run: |
       aws ecr describe-repositories --region us-east-2
-
   - name: Build PHP image
-    run: |
-      docker build -t 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest -f docker/php/Dockerfile .
-
+    run: >
+      docker build -t
+      159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest -f
+      docker/php/Dockerfile .
   - name: Push PHP image
-    run: |
-      docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest
-
+    run: >
+      docker push
+      159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest
   - name: Build NGINX image
-    run: |
-      docker build -t 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest -f docker/nginx/Dockerfile .
-
+    run: >
+      docker build -t
+      159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest -f
+      docker/nginx/Dockerfile .
   - name: Push NGINX image
-    run: |
-      docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest
-
+    run: >
+      docker push
+      159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest
   - name: Force ECS deployment
     run: |
       aws ecs update-service \
         --cluster syslac-cluster \
         --service syslac-service \
         --force-new-deployment
-
-
