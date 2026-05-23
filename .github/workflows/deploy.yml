@@ -20,26 +20,34 @@ steps:
     with:
       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      aws-region: ${{ secrets.AWS_REGION }}
+      aws-region: us-east-2
 
   - name: Login to Amazon ECR
-    id: login-ecr
     uses: aws-actions/amazon-ecr-login@v2
 
-	-	name: Build PHP image
-		run: |
-		docker build -t inventory-php -f docker/php/Dockerfile .
-		docker tag inventory-php 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php
-	
-	-	name: Push PHP image
-		run: |
-		docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php
+  - name: Build PHP image
+    run: |
+      docker build -t inventory-php -f docker/php/Dockerfile .
+      docker tag inventory-php:latest 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest
 
-	-	name: Build NGINX image
-		run: |
-		docker build -t inventory-nginx -f docker/nginx/Dockerfile .
-		docker tag inventory-nginx 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx
+  - name: Push PHP image
+    run: |
+      docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest
 
-	-	name: Push NGINX image
-		run: |
-		docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx
+  - name: Build NGINX image
+    run: |
+      docker build -t inventory-nginx -f docker/nginx/Dockerfile .
+      docker tag inventory-nginx:latest 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest
+
+  - name: Push NGINX image
+    run: |
+      docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest
+
+  - name: Force ECS deployment
+    run: |
+      aws ecs update-service \
+        --cluster syslac-cluster \
+        --service syslac-service \
+        --force-new-deployment
+
+
