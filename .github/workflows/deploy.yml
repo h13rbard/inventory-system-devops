@@ -25,24 +25,21 @@ steps:
   - name: Login to Amazon ECR
     uses: aws-actions/amazon-ecr-login@v2
 
-  - name: Build PHP image
-    run: |
+	- name: Build PHP image
+    run: 
       docker build -t inventory-php -f docker/php/Dockerfile .
-      docker tag inventory-php:latest 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest
-
+      docker tag inventory-php 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php
   - name: Push PHP image
-    run: |
-      docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest
-
+    run: 
+      docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php
   - name: Build NGINX image
-    run: |
+    run: 
       docker build -t inventory-nginx -f docker/nginx/Dockerfile .
-      docker tag inventory-nginx:latest 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest
-
+      docker tag inventory-nginx 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx
   - name: Push NGINX image
-    run: |
-      docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest
-
+    run: 
+      docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory
+  
   - name: Force ECS deployment
     run: |
       aws ecs update-service \
