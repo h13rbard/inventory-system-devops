@@ -7,7 +7,6 @@ branches:
 
 jobs:
 deploy:
-name: Build and Deploy
 runs-on: ubuntu-latest
 
 
@@ -38,10 +37,6 @@ steps:
     run: |
       docker build -t 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest -f docker/php/Dockerfile .
 
-  - name: List Docker images
-    run: |
-      docker images
-
   - name: Push PHP image
     run: |
       docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest
@@ -60,4 +55,5 @@ steps:
         --cluster syslac-cluster \
         --service syslac-service \
         --force-new-deployment
+
 
