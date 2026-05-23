@@ -30,27 +30,19 @@ steps:
       aws sts get-caller-identity
       aws ecr describe-repositories --region us-east-2
 
-  - name: Build PHP image
+  - name: Build and Push PHP image
     run: |
-      docker build -t inventory-php:latest -f docker/php/Dockerfile .
-      docker tag inventory-php:latest 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest
+      docker build -t 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest -f docker/php/Dockerfile .
+      docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest
+
+  - name: Build and Push NGINX image
+    run: |
+      docker build -t 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest -f docker/nginx/Dockerfile .
+      docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest
 
   - name: Debug Docker Images
     run: |
       docker images
-
-  - name: Push PHP image
-    run: |
-      docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest
-
-  - name: Build NGINX image
-    run: |
-      docker build -t inventory-nginx:latest -f docker/nginx/Dockerfile .
-      docker tag inventory-nginx:latest 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest
-
-  - name: Push NGINX image
-    run: |
-      docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest
 
   - name: Force ECS deployment
     run: |
