@@ -26,37 +26,20 @@ steps:
     id: login-ecr
     uses: aws-actions/amazon-ecr-login@v2
 
-	* name: Debug AWS
-  	run: |
-  	aws sts get-caller-identity
-  	aws ecr describe-repositories
+	-	name: Build PHP image
+		run: |
+		docker build -t inventory-php -f docker/php/Dockerfile .
+		docker tag inventory-php 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php
+	
+	-	name: Push PHP image
+		run: |
+		docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php
 
-	* name: Set image tags
-  	run: |
-  	echo "PHP_IMAGE=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/inventory-php:latest" >> $GITHUB_ENV
-  	echo "NGINX_IMAGE=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/inventory-nginx:latest" >> $GITHUB_ENV
+	-	name: Build NGINX image
+		run: |
+		docker build -t inventory-nginx -f docker/nginx/Dockerfile .
+		docker tag inventory-nginx 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx
 
-	* name: Build PHP image
-  	run: |
-  	docker build -t $PHP_IMAGE -f docker/php/Dockerfile .
-
-	* name: Push PHP image
-  	run: |
-  	docker push $PHP_IMAGE
-
-	* name: Build NGINX image
-  	run: |
-  	docker build -t $NGINX_IMAGE -f docker/nginx/Dockerfile .
-
-	* name: Push NGINX image
-  	run: |
-  	docker push $NGINX_IMAGE
-
-  - name: Force ECS deployment
-    run: |
-      aws ecs update-service \
-        --cluster syslac-cluster \
-        --service syslac-service \
-        --force-new-deployment
-
-
+	-	name: Push NGINX image
+		run: |
+		docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx
