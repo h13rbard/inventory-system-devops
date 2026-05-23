@@ -61,4 +61,3 @@ steps:
         --service syslac-service \
         --force-new-deployment
 
-
