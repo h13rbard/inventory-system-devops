@@ -27,26 +27,32 @@ steps:
       aws sts get-caller-identity
 
   - name: Login to Amazon ECR
-    uses: aws-actions/amazon-ecr-login@v2
+    run: |
+      aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 159858924500.dkr.ecr.us-east-2.amazonaws.com
 
   - name: Debug ECR
     run: |
-      aws sts get-caller-identity
       aws ecr describe-repositories --region us-east-2
 
-  - name: Build and Push PHP image
+  - name: Build PHP image
     run: |
       docker build -t 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest -f docker/php/Dockerfile .
-      docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest
 
-  - name: Build and Push NGINX image
-    run: |
-      docker build -t 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest -f docker/nginx/Dockerfile .
-      docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest
-
-  - name: Debug Docker Images
+  - name: List Docker images
     run: |
       docker images
+
+  - name: Push PHP image
+    run: |
+      docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest
+
+  - name: Build NGINX image
+    run: |
+      docker build -t 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest -f docker/nginx/Dockerfile .
+
+  - name: Push NGINX image
+    run: |
+      docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest
 
   - name: Force ECS deployment
     run: |
