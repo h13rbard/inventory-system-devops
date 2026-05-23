@@ -1,5 +1,5 @@
 name: Deploy to ECS
-'on': null
+on: null
 push: null
 branches:
   - develop
