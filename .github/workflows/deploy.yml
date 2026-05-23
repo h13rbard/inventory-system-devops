@@ -1,45 +1,39 @@
 name: Deploy to ECS
-
-on:
-push:
+'on': null
+push: null
 branches:
-- develop
-
-jobs:
-deploy:
+  - develop
+jobs: null
+deploy: null
 runs-on: ubuntu-latest
-
-
 steps:
   - uses: actions/checkout@v4
-
   - uses: aws-actions/configure-aws-credentials@v4
     with:
       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       aws-region: us-east-2
-
   - run: aws sts get-caller-identity
-
-  - run: |
-      aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 159858924500.dkr.ecr.us-east-2.amazonaws.com
-
-  - run: |
-      docker build -t 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest -f docker/php/Dockerfile .
-
-  - run: |
-      docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest
-
-  - run: |
-      docker build -t 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest -f docker/nginx/Dockerfile .
-
-  - run: |
-      docker push 159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest
-
+  - run: >
+      aws ecr get-login-password --region us-east-2 | docker login --username
+      AWS --password-stdin 159858924500.dkr.ecr.us-east-2.amazonaws.com
+  - run: >
+      docker build -t
+      159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest -f
+      docker/php/Dockerfile .
+  - run: >
+      docker push
+      159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest
+  - run: >
+      docker build -t
+      159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest -f
+      docker/nginx/Dockerfile .
+  - run: >
+      docker push
+      159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest
   - run: |
       aws ecs update-service \
         --cluster syslac-cluster \
         --service syslac-service \
         --force-new-deployment
-
 
