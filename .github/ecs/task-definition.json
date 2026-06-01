@@ -1,0 +1,23 @@
+{
+  "family": "syslac-lab-task",
+  "taskRoleArn": "arn:aws:iam::159858924500:role/ecsTaskExecutionRole",
+  "executionRoleArn": "arn:aws:iam::159858924500:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "512",
+  "memory": "1024",
+  "containerDefinitions": [
+    {
+      "name": "nginx",
+      "image": "159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-nginx:latest",
+      "essential": true
+    },
+    {
+      "name": "php",
+      "image": "159858924500.dkr.ecr.us-east-2.amazonaws.com/inventory-php:latest",
+      "essential": true
+    }
+  ]
+}
