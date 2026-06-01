@@ -44,6 +44,6 @@ jobs:
             --force-new-deployment-
 
       - run: |
-          aws ecs wait services-stable \
-            --cluster syslac-cluster \
+          aws ecs wait services-stable
+            --cluster syslac-cluster
             --services syslac-service
