@@ -38,6 +38,8 @@ NGINX  PHP-FPM
     ▼
 Amazon RDS MySQL
 ```
+![](https://github.com/h13rbard/inventory-system-devops/blob/develop/screenshots/architecture-diagram.png)
+
 
 ### Components
 
