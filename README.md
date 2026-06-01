@@ -302,7 +302,7 @@ Planned roadmap:
 
 ## Author
 
-Juan Gerardo
+Juan Gerardo Gutierrez Muñoz
 
 Cloud / DevOps Engineering Portfolio Project
 
