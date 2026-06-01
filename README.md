@@ -1,73 +1,64 @@
 # Syslac Cloud Platform
 
-## 1. Overview
+## Overview
 
-Syslac Cloud Platform is a personal DevOps and Cloud Engineering project designed to modernize and operate a legacy inventory management system using AWS managed services, Infrastructure as Code, observability, and CI/CD practices.
+Syslac Cloud Platform is a cloud modernization project focused on migrating and operating a legacy inventory management application using AWS managed services, containerization, Infrastructure as Code, and CI/CD practices.
 
-The objective of the project is not only to host an application, but to build a production-like environment following modern cloud-native operational practices.
-
-### Main Goals
-
-* Containerize a legacy PHP application.
-* Deploy workloads on AWS ECS Fargate.
-* Implement centralized monitoring and logging.
-* Automate deployments using GitHub Actions.
-* Manage infrastructure through Terraform.
-* Build operational visibility with dashboards, alerts, and uptime monitoring.
-* Learn production-grade cloud operations through hands-on implementation.
+The project demonstrates how a traditional PHP application can be transformed into a cloud-native deployment running on Amazon ECS Fargate.
 
 ---
 
-## 2. Architecture
+## Project Goals
 
-### High-Level Architecture
+* Containerize a legacy CodeIgniter application.
+* Deploy workloads using AWS ECS Fargate.
+* Store container images in Amazon ECR.
+* Provision infrastructure using Terraform.
+* Implement CI/CD pipelines with GitHub Actions.
+* Operate the platform using production-oriented deployment practices.
 
+---
+
+## Architecture
+
+```text
 Internet
-│
-▼
-Application Load Balancer (ALB)
-│
-▼
+    │
+    ▼
+Application Load Balancer
+    │
+    ▼
 AWS ECS Fargate
-│
-├── NGINX Container
-└── PHP-FPM Container
-│
-▼
+    │
+ ┌──┴──┐
+ │     │
+ ▼     ▼
+NGINX  PHP-FPM
+    │
+    ▼
 Amazon RDS MySQL
+```
 
-Observability Stack
+### Components
 
-Prometheus
-Node Exporter
-cAdvisor
-Loki
-Alertmanager
-Grafana
-Uptime Kuma
-
-CI/CD
-
-GitHub
-│
-▼
-GitHub Actions
-│
-▼
-Amazon ECR
-│
-▼
-Amazon ECS
+* Application Load Balancer
+* ECS Fargate Cluster
+* NGINX Container
+* PHP-FPM Container
+* Amazon RDS MySQL
+* Amazon ECR
+* GitHub Actions
+* Terraform
 
 ---
 
-## 3. Infrastructure
+## Infrastructure
 
-### Cloud Provider
+### Cloud Platform
 
-* AWS
+AWS
 
-### Core Services
+### Services Used
 
 * Amazon ECS Fargate
 * Amazon ECR
@@ -78,225 +69,150 @@ Amazon ECS
 
 ### Infrastructure as Code
 
-Infrastructure provisioning and management is performed using Terraform.
+Infrastructure provisioning is managed using Terraform.
 
-Terraform resources include:
+Current Terraform modules include:
 
-* ECS Clusters
+* ECS Cluster
 * ECS Services
-* Task Definitions
 * Load Balancers
-* Networking components
-* IAM configurations
-
-### Domains
-
-Production Services:
-
-* syscla.jgerardogm.lat
-* grafana.jgerardogm.lat
-* status.jgerardogm.lat
-
-TLS certificates are managed automatically through Traefik and Let's Encrypt.
+* Networking
+* IAM Resources
 
 ---
 
-## 4. Monitoring
+## Containerization
 
-The platform includes a complete monitoring stack.
+The application is split into two containers:
 
-### Prometheus
+### NGINX
 
-Responsible for collecting metrics from:
+Responsible for:
 
-* ECS services
-* Node Exporter
-* cAdvisor
-* Infrastructure services
+* HTTP traffic
+* Reverse proxy
+* Static content delivery
 
-### Grafana
+### PHP-FPM
 
-Used to visualize:
+Responsible for:
 
-* ECS metrics
-* Container metrics
-* Resource consumption
-* CloudWatch metrics
-* Service health
+* Business logic
+* CodeIgniter execution
+* Database connectivity
 
-### Uptime Kuma
-
-Used for external monitoring of:
-
-* Production application
-* Grafana
-* Public endpoints
-
-### Alertmanager
-
-Provides alert routing and notification management.
-
-Implemented alerts include:
-
-* Service availability
-* Infrastructure health
-* Monitoring stack failures
+Container images are stored in Amazon ECR.
 
 ---
 
-## 5. Logging
+## CI/CD
 
-Centralized logging is implemented using:
+GitHub Actions automates application deployments.
 
-### Loki
+### Current Pipeline
 
-Stores application and infrastructure logs.
-
-### CloudWatch Logs
-
-Receives ECS container logs using awslogs drivers.
-
-### Grafana Log Exploration
-
-Logs can be queried and correlated with metrics directly from Grafana.
-
-Benefits:
-
-* Faster troubleshooting
-* Centralized visibility
-* Historical log retention
-
----
-
-## 6. CI/CD
-
-Continuous delivery is implemented using GitHub Actions.
-
-### Deployment Workflow
-
-Developer Push
-↓
+```text
+Git Push
+   │
+   ▼
 GitHub Actions
-↓
-Build Docker Images
-↓
-Push Images to Amazon ECR
-↓
-Update ECS Service
-↓
-Deploy New Revision
+   │
+   ▼
+Docker Build
+   │
+   ▼
+Amazon ECR
+   │
+   ▼
+Amazon ECS Deployment
+```
 
-### Current Features
+### Features
 
-* Automated container builds
-* ECR image publishing
-* ECS deployments
+* Automated image builds
+* Automated image publishing
+* ECS service deployment
 * Deployment validation
-* Service stability verification
-
-### Ongoing Improvements
-
-* Immutable SHA image tagging
-* ECS task revision deployments
-* Automated rollback strategy
 
 ---
 
-## 7. Security
+## Security
 
-Several security practices have been implemented:
+Implemented security controls include:
 
-### HTTPS Everywhere
-
-* Traefik reverse proxy
-* Let's Encrypt certificates
-* Automatic certificate renewal
-
-### IAM
-
-* Role-based access control
+* HTTPS with TLS certificates
+* IAM roles
 * ECS execution roles
-* Least-privilege approach
+* Private container registry
 
-### Future Security Enhancements
+Planned improvements:
 
-* AWS Secrets Manager integration
+* AWS Secrets Manager
 * Secret rotation
-* Enhanced IAM segmentation
+* Enhanced IAM policies
 
 ---
 
-## 8. Lessons Learned
+## Lessons Learned
 
-This project was built following a learn-by-building approach.
+Key lessons learned during the project:
 
-Key lessons:
+### Build, Break, Rebuild
 
-### Infrastructure Failures Are Valuable
+Understanding cloud systems required repeatedly building, troubleshooting, and redesigning infrastructure components.
 
-Many components required multiple rebuilds and redesigns before reaching stable production operation.
+### Infrastructure as Code Matters
 
-### Observability Is Essential
+Terraform significantly improved repeatability and environment consistency.
 
-Monitoring transformed infrastructure management from reactive troubleshooting to proactive operations.
+### Containerization Simplifies Deployments
 
-### Automation Reduces Risk
+Docker reduced deployment complexity and improved portability.
 
-CI/CD pipelines significantly reduce deployment complexity and human error.
+### CI/CD Reduces Operational Risk
 
-### Documentation Matters
-
-Building systems is only part of the job. Being able to explain architecture, decisions, and tradeoffs is equally important.
-
-### Production-Like Experience
-
-This project provided practical experience with:
-
-* AWS
-* Terraform
-* Docker
-* ECS
-* Grafana
-* Prometheus
-* Loki
-* Alertmanager
-* GitHub Actions
+Automated deployments reduce manual errors and improve consistency.
 
 ---
 
-## 9. Future Improvements
+## Future Improvements
 
 Planned roadmap:
+
+### CI/CD
+
+* ECS Task Definition Revisioning
+* Immutable Image Deployments
+* Automated Rollbacks
 
 ### Security
 
 * AWS Secrets Manager
-* Secret rotation
-* Improved IAM policies
-
-### CI/CD
-
-* ECS Task Definition revisioning
-* Immutable image deployments
-* Automated rollback
+* Secret Rotation
 
 ### Infrastructure
 
-* Full Terraform coverage
-* Multi-environment support
-* Disaster recovery automation
+* Full Terraform Coverage
+* Multi-Environment Deployments
 
-### Observability
+### Scalability
 
-* Advanced dashboards
-* SLO/SLA reporting
-* Long-term metrics retention
+* Auto Scaling Policies
+* Blue/Green Deployments
 
-### Platform Expansion
+---
 
-* Odoo deployment environment
-* Multi-cloud experiments
-* Additional business services
+## Technologies
+
+* AWS ECS Fargate
+* Amazon ECR
+* Amazon RDS
+* Terraform
+* Docker
+* GitHub Actions
+* NGINX
+* PHP-FPM
+* CodeIgniter
 
 ---
 
@@ -304,6 +220,4 @@ Planned roadmap:
 
 Juan Gerardo Gutierrez Muñoz
 
-Cloud / DevOps Engineering Portfolio Project
-
-Built with AWS, Terraform, Docker, Grafana, Prometheus, Loki, Alertmanager and GitHub Actions.
+Cloud & DevOps Engineering Portfolio Project
