@@ -3,7 +3,6 @@
 application/cache/*
 !application/cache/index.html
 
-
 .env
 
 /vendor
@@ -17,3 +16,34 @@ application/cache/*
 /public/images/uploads/*
 
 docker/mysql
+
+prettier.config.js
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+
+# AWS
+task-definition*.json
+
+# Database
+*.sql
+
+# Backups
+*.bak
+
+# Local env
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+.htaccess 
+.editorconfig 
+contributing.md 
