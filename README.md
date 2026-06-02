@@ -1,4 +1,4 @@
-#  Syswqlac Cloud Platform
+#  Syslac Cloud Platform
 
 ![Status](https://img.shields.io/badge/status-active-success)
 ![AWS](https://img.shields.io/badge/cloud-AWS-orange)
@@ -226,37 +226,31 @@ Current security controls include:
 
 ## Application
 
-![Application](screenshots/application-home.png)
-
+![Login](screenshots/application/login.png)
+![Dashboard](screenshots/application/dashboard.png)
 ---
 
 ## ECS Service
 
-![ECS Service](screenshots/ecs-service.png)
-
+![ECS Service](screenshots/service/containers-active.png)
+![ECS Service](screenshots/service/containers.png)
 ---
 
 ## ECS Cluster
 
-![ECS Cluster](screenshots/ecs-cluster.png)
-
----
-
-## Task Definition
-
-![Task Definition](screenshots/ecs-task-definition.png)
+![ECS Cluster](screenshots/cluster/service-lab.png)
 
 ---
 
 ## Amazon ECR
 
-![Amazon ECR](screenshots/ecr-repositories.png)
+![Amazon ECR](screenshots/ecr/repositories.png)
 
 ---
 
 ## GitHub Actions Deployment
 
-![GitHub Actions](screenshots/github-actions-success.png)
+![GitHub Actions](screenshots/actions/github-actions.png)
 
 ---
 
