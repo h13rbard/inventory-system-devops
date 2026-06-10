@@ -1,0 +1,128 @@
+<link rel="stylesheet" href="<?=base_url()?>assets/js/keyTable.dataTables.min.css">
+<script src="<?=base_url()?>assets/js/dataTables.keyTable.min.js"></script>
+<script type="text/javascript">
+var save_method; //for save method string
+var table;
+var indexRow = 0;
+
+$(document).ready(function(){
+
+table = $("#dtRegistros").DataTable({
+        processing: true,
+        serverSide: false,
+        keys: true,
+        "iDisplayLength": 5,
+		// stateSave: true,
+		"language": {
+			"url": "<?=base_url()?>assets/js/Spanish.json",
+		},
+        ajax: {
+            "url": "<?=base_url()?>templatetickets/datatable",
+            "type": "POST",
+        },
+        columns: [ 
+            { data: "id" },
+            { data: "clave" },
+            { data: "acciones", "orderable": false}
+        ],
+        "columnDefs": [
+            { "visible": false, "targets": 0 }
+        ],
+    });
+
+$('div.dataTables_filter input').focus();
+
+});
+
+$('#form').submit(function (e) {
+    if (e.isDefaultPrevented()) {
+    // handle the invalid form...
+    } else {
+    e.preventDefault();
+    save();
+    }
+});
+
+function add()
+{
+    save_method = 'add';
+    $('#form')[0].reset(); // reset form on modals
+    $('#modal_form').modal('show'); // show bootstrap modal
+    $('.modal-title').text('Agregar'); // Set Title to Bootstrap modal title
+}
+
+function edit(id)
+{
+    save_method = 'update';
+    $('#form')[0].reset(); // reset form on modals
+
+    //Ajax Load data from ajax
+    $.ajax({
+    url : "<?php echo site_url('templatetickets/ajax_edit/')?>" + id,
+    type: "GET",
+    dataType: "JSON",
+    success: function(data)
+    {
+        $('[name="id"]').val(data.id);
+		$('[name="clave"]').val(data.clave);
+        $('[name="formato"]').val(data.formato);
+
+        $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
+        $('.modal-title').text('Editar'); // Set title to Bootstrap modal title
+
+    },
+    error: function (jqXHR, textStatus, errorThrown)
+    {
+        alert('Error get data from ajax');
+    }
+});
+}
+
+function reload_table()
+{
+    table.ajax.reload(function(settings, json) {
+            // $(table.row(indexRow).node().cells[0]).focus().click();
+            $('div.dataTables_filter input').focus();
+        },false);
+}
+
+function save()
+{
+    var url;
+    if(save_method == 'add')
+    {
+    url = "<?php echo site_url('templatetickets/ajax_add')?>";
+    }
+    else
+    {
+    url = "<?php echo site_url('templatetickets/ajax_update')?>";
+    }
+
+    // ajax adding data to database
+        $.ajax({
+        url : url,
+        type: "POST",
+        data: $('#form').serialize(),
+        dataType: "JSON",
+        success: function(data)
+        {
+            if (data.status)
+            {              
+                //if success close modal and reload ajax table
+                $('#modal_form').modal('hide');
+                reload_table();
+                toastr.success(data.mensaje);
+            }
+            else
+            {
+                toastr.error(data.mensaje);
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            alert('Error adding / update data');
+        }
+    });    
+}
+
+</script>

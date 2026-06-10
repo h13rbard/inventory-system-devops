@@ -1,0 +1,114 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Conceptos extends CI_Controller {
+
+	public function __construct()
+    {
+        parent::__construct();
+        $this->load->library(array('ion_auth','form_validation', 'datatables'));
+        $this->form_validation->set_error_delimiters('', '');
+        $this->load->helper(array('url'));
+
+        $this->lang->load('auth');
+
+        $this->user = null;
+        if ($this->ion_auth->logged_in())
+        {
+			$this->user = $this->ion_auth->user()->row();
+			$this->admin = $this->ion_auth->in_group(array(1, 3));
+        }
+        else
+        {
+            //redirect them to the login page
+            redirect('auth/login', 'refresh');
+        }
+    }
+
+	public function index()
+	{
+		$this->load->model('Categoria_model');
+        $data['categorias'] = $this->Categoria_model->getList();
+
+		$this->load->view('layout/header', array('user' => $this->user, 'admin' => $this->admin));
+		$this->load->view('conceptos/index', $data);
+		$this->load->view('layout/footer');
+		$this->load->view('conceptos/index-js', $data);
+		$this->load->view('layout/close');
+	}
+
+	public function datatable()
+    {
+        $this->datatables->select('a.id, a.nombre, t.nombre AS categoria, a.categoria_id')
+        ->from('conceptos AS a')
+        ->join('categorias AS t', 'a.categoria_id = t.id')
+        ->add_column('acciones', '<a href="#" title="Editar" onclick="edit('."'$1'".')" class="btn btn-secondary btn-sm">Editar</a>', 'id');
+        echo $this->datatables->generate();
+    }
+
+    public function ajax_add()
+    {
+        if (!$this->input->is_ajax_request())
+            exit("No es AJAX");
+
+        $this->load->helper(array('form'));
+        
+        $this->load->model('Concepto_model');
+        
+        $this->Concepto_model->rules();
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            echo json_encode(array("status" => FALSE, "mensaje" => validation_errors() ));
+        }
+        else
+        {    
+            $r = $this->Concepto_model->existeNombre(0, $this->input->post('nombre'), $this->input->post('categoria_id') );
+            if ($r > 0)
+            {
+                echo json_encode(array("status" => FALSE, "mensaje" => "El campo Nombre debe contener un valor único para la categoria." ));
+                exit();
+            }
+
+            $insert = $this->Concepto_model->insert();
+            echo json_encode(array("status" => TRUE, "mensaje" => "Registro guardado correctamente."));
+        }
+    }
+
+    public function ajax_edit($id)
+    {
+        $this->load->model('Concepto_model');
+        $data = $this->Concepto_model->getById($id);
+        echo json_encode($data);
+    }
+
+    public function ajax_update()
+    {
+        if (!$this->input->is_ajax_request())
+            exit("No es AJAX");
+
+        $this->load->helper(array('form'));
+                
+        $this->load->model('Concepto_model');
+        
+        $this->Concepto_model->rules();
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            echo json_encode(array("status" => FALSE, "mensaje" => validation_errors() ));
+        }
+        else
+        {    
+            $r = $this->Concepto_model->existeNombre($this->input->post('id'), $this->input->post('nombre'), $this->input->post('categoria_id') );
+            if ($r > 0)
+            {
+                echo json_encode(array("status" => FALSE, "mensaje" => "El campo Nombre debe contener un valor único para la categoria." ));
+                exit();
+            }
+            
+            $update = $this->Concepto_model->update($this->input->post('id'));
+            echo json_encode(array("status" => TRUE, "mensaje" => "Registro guardado correctamente."));
+        }
+    }
+
+}

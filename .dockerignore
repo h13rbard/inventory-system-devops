@@ -1,0 +1,16 @@
+.git
+.github
+.env
+docker-compose.yml
+README.md
+
+application/logs/*
+application/cache/*
+
+vendor
+
+node_modules
+
+tests
+
+tmp
